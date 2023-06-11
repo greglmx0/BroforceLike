@@ -19,8 +19,8 @@ function quitButton:new(x, y, width, height)
 end
 
 function quitButton:draw()
-    text = "Quit"
-    love.graphics.setColor(0, 255, 255)
+    text = "Exit game"
+    love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     love.graphics.setColor(255, 255, 255)
     love.graphics.print(text, self.x + (self.width / 2) - (love.graphics.getFont():getWidth(text) / 2), self.y + (self.height / 2) - (love.graphics.getFont():getHeight(text) / 2))
