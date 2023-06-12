@@ -1,28 +1,24 @@
-require("GUI/Button")
 
-width = love.graphics.getWidth()
-height = love.graphics.getHeight()
-
-function Menu(game, player)
+function Setting(game)
     local funcs = {
-        newGame = function ()
-            game:startNewGame(player)
+        returnInGame = function()
+            game:changeGameState("running")
         end,
-        showSetting = function()
-            game:changeGameState("setting")
+        backToMenu = function()
+            game:changeGameState("menu")
         end,
         quitGame = function()
             love.event.quit()
         end,
     }
-
     local buttons = {
-        Button(funcs.newGame, nil, nil, love.graphics.getWidth() / 3, 50, "New Game", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.25),
-        Button(funcs.showSetting, nil, nil, love.graphics.getWidth() / 3, 50, "Setting", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.40),
-        Button(funcs.quitGame, nil, nil, love.graphics.getWidth() / 3, 50, "Quit", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.55),
+        Button(funcs.returnInGame, nil, nil, love.graphics.getWidth() / 3, 50, "Back to game", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.35),
+        Button(funcs.backToMenu, nil, nil, love.graphics.getWidth() / 3, 50, "Back to menu", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.50),
+        Button(funcs.quitGame, nil, nil, love.graphics.getWidth() / 3, 50, "Quit game", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.65),
     }
 
     return {
+
         focused = "",
         run = function(self, clicked)
             local mouse_x, mouse_y = love.mouse.getPosition()
@@ -30,6 +26,7 @@ function Menu(game, player)
                 if button:checkHover(mouse_x, mouse_y, 10) then
                     if clicked then
                         print("clicked " .. name)
+                        print("clicked in pause")
                         button:click()
                     end
 
@@ -43,14 +40,17 @@ function Menu(game, player)
         end,
 
         draw = function(self)
+
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.print("Paused", 0, 0)
+
             for _, button in pairs(buttons) do
                 button:draw()
             end
+
         end
     }
 
 end
 
-return Menu
-
-
+return Setting

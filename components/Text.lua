@@ -18,7 +18,7 @@ local love = require "love"
     -> opacity: number (optional)
         default: 1
         options: 0.1 - 1
-        NB: Setting fade_in = true will overwrite this to 0.1
+        NB: Setting.lua fade_in = true will overwrite this to 0.1
  ]]
 function Text(text, x, y, font_size, fade_in, fade_out, wrap_width, align, opacity)
     font_size = font_size or "p"
