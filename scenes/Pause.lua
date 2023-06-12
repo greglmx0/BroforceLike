@@ -1,11 +1,11 @@
 
-function Setting(game)
+function Paused()
     local funcs = {
         returnInGame = function()
-            game:changeGameState("running")
+            menu:changeGameState("running")
         end,
         backToMenu = function()
-            game:changeGameState("menu")
+            menu:changeGameState("menu")
         end,
         quitGame = function()
             love.event.quit()
@@ -53,4 +53,4 @@ function Setting(game)
 
 end
 
-return Setting
+return Paused

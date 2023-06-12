@@ -1,8 +1,8 @@
 
-function Setting(game)
+function Setting()
     local funcs = {
         backToMenu = function()
-            game:changeGameState("menu")
+            menu:changeGameState("menu")
         end,
     }
     local buttons = {

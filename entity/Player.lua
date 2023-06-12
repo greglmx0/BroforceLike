@@ -20,7 +20,7 @@ function Player(num_lives)
 
         update = function(self, dt)
 
-            if game.state.running then
+            if menu.state.running then
 
                 if love.keyboard.isDown("z") or love.keyboard.isDown("up") then
 

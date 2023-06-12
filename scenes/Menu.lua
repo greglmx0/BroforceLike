@@ -3,13 +3,17 @@ require("GUI/Button")
 width = love.graphics.getWidth()
 height = love.graphics.getHeight()
 
-function Menu(game, player)
+function Menu()
+
     local funcs = {
         newGame = function ()
-            game:startNewGame(player)
+            game = Game()
+            pause = Paused(game)
+            player = Player(4)
+            menu:changeGameState("running")
         end,
         showSetting = function()
-            game:changeGameState("setting")
+            menu:changeGameState("setting")
         end,
         quitGame = function()
             love.event.quit()
@@ -23,6 +27,23 @@ function Menu(game, player)
     }
 
     return {
+
+        state = {
+            menu = true,
+            paused = false,
+            running = false,
+            ended = false,
+            setting = false,
+        },
+
+        changeGameState = function(self, state)
+            menu.state["menu"] = state == "menu"
+            menu.state["paused"] = state == "paused"
+            menu.state["running"] = state == "running"
+            menu.state["ended"] = state == "ended"
+            menu.state["setting"] = state == "setting" print("changed to " .. state)
+        end,
+
         focused = "",
         run = function(self, clicked)
             local mouse_x, mouse_y = love.mouse.getPosition()
@@ -48,7 +69,6 @@ function Menu(game, player)
             end
         end
     }
-
 end
 
 return Menu

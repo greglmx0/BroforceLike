@@ -7,33 +7,29 @@ local Pause = require "scenes/Pause"
 
 function love.load()
     mouse_x, mouse_y = 0, 0
-
-    game = Game()
-    pause = Pause(game)
-    setting = Setting(game)
-    player = Player(4)
-    menu = Menu(game, player)
+    menu = Menu()
+    setting = Setting()
 end
 
 function love.update(dt)
 
     mouse_x, mouse_y = love.mouse.getPosition()
 
-    if game.state.running then
+    if menu.state.running then
         player:update(dt)
     end
 
-    if game.state.menu then
+    if menu.state.menu then
         menu:run(clickedMouse)
         clickedMouse = false
     end
 
-    if game.state.paused then
+    if menu.state.paused then
         pause:run(clickedMouse)
         clickedMouse = false
     end
 
-    if game.state.setting then
+    if menu.state.setting then
         setting:run(clickedMouse)
         clickedMouse = false
     end
@@ -42,43 +38,43 @@ end
 
 function love.draw()
 
-    if game.state["running"] then
+    if menu.state["running"] then
 
         player:draw()
         game:draw()
 
-    elseif game.state["menu"] then
+    elseif menu.state["menu"] then
 
         menu:draw()
 
-    elseif game.state["paused"] then
+    elseif menu.state["paused"] then
 
         pause:draw()
 
-    elseif game.state["setting"] then
+    elseif menu.state["setting"] then
 
         setting:draw()
 
-    elseif game.state["ended"] then
+    elseif menu.state["ended"] then
         love.graphics.printf("Game Over", fonts.massive.font, 0, love.graphics.getHeight() / 2 - fonts.massive.size, love.graphics.getWidth(), "center")
     end
 
-    if not game.state["running"] then
+    if not menu.state["running"] then
         -- if game is NOT running
 
     end
 end
 
 function love.keypressed(key)
-    if game.state.running then
+    if menu.state.running then
 
         if key == "escape" then
-            game:changeGameState("paused")
+            menu:changeGameState("paused")
         end
-    elseif game.state.paused then
+    elseif menu.state.paused then
 
         if key == "escape" then
-            game:changeGameState("running")
+            menu:changeGameState("running")
         end
     end
 end
@@ -89,7 +85,7 @@ end
 
 function love.mousepressed(x, y, button, istouch, presses)
     if button == 1 then
-        if not game.state.running or not game.state.paused then
+        if not menu.state.running or not menu.state.paused then
             clickedMouse = true -- set if mouse is clicked
         end
     end
