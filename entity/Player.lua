@@ -8,13 +8,48 @@ function Player(num_lives)
         expload_time = 0,
         exploading = false,
         thrusting = false,
-        lazers = {},
         wapon = {},
-
 
         draw = function(self)
 
-        end
+            love.graphics.setColor(255, 255, 255)
+            love.graphics.rectangle("fill", self.x, self.y, 40, 80)
+            love.graphics.setColor(0, 0, 0)
+
+        end,
+
+        update = function(self, dt)
+
+            if game.state.running then
+
+                if love.keyboard.isDown("z") or love.keyboard.isDown("up") then
+
+                    if self.y - 80 < love.graphics.getHeight() then
+                        self.y = self.y - 10
+                    end
+
+                    self.y = self.y - 10
+                end
+
+                if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
+
+                    -- test if player is not under the floor
+                    if self.y + 80 < love.graphics.getHeight() then
+                        self.y = self.y + 10
+                    end
+
+                    -- self.y = self.y + 10
+                end
+
+                if love.keyboard.isDown("q") or love.keyboard.isDown("left") then
+                    self.x = self.x - 10
+                end
+
+                if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
+                    self.x = self.x + 10
+                end
+            end
+        end,
     }
 end
 

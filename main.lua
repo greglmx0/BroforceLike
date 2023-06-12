@@ -12,12 +12,16 @@ function love.load()
     pause = Pause(game)
     setting = Setting(game)
     player = Player(4)
-    menu = Menu( game, player )
+    menu = Menu(game, player)
 end
 
 function love.update(dt)
 
     mouse_x, mouse_y = love.mouse.getPosition()
+
+    if game.state.running then
+        player:update(dt)
+    end
 
     if game.state.menu then
         menu:run(clickedMouse)
@@ -40,7 +44,8 @@ function love.draw()
 
     if game.state["running"] then
 
-        -- game:draw()
+        player:draw()
+        game:draw()
 
     elseif game.state["menu"] then
 
@@ -67,37 +72,13 @@ end
 function love.keypressed(key)
     if game.state.running then
 
-        if key == "z" or key == "up"  then
-            print(key)
-        end
-
-        if key == "s" or key == "down"  then
-            print(key)
-        end
-
-        if key == "q" or key == "left"  then
-            print(key)
-        end
-
-        if key == "d" or key == "right"  then
-            print(key)
-        end
-
-        if key == "space" then
-            print(key)
-        end
-
         if key == "escape" then
-            print(game.state)
             game:changeGameState("paused")
-            print(game.state)
         end
     elseif game.state.paused then
 
         if key == "escape" then
-            print(game.state)
             game:changeGameState("running")
-            print(game.state)
         end
     end
 end

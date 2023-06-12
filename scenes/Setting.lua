@@ -6,7 +6,7 @@ function Setting(game)
         end,
     }
     local buttons = {
-        Button(funcs.backToMenu, nil, nil, love.graphics.getWidth() / 3, 50, "Back to menu", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.55),
+        Button(funcs.backToMenu, nil, nil, love.graphics.getWidth() / 3, 50, "Back to menu", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.80),
     }
 
     return {
@@ -37,7 +37,6 @@ function Setting(game)
             for _, button in pairs(buttons) do
                 button:draw()
             end
-
         end
     }
 
