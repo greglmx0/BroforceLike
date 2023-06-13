@@ -9,7 +9,6 @@ function Menu()
         newGame = function ()
             game = Game()
             pause = Paused(game)
-            player = Player(4)
             menu:changeGameState("running")
         end,
         showSetting = function()
