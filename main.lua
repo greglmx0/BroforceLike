@@ -1,7 +1,6 @@
 local love = require("love")
 local Player = require "entity/Player"
 local Menu = require "scenes/Menu"
-local Game = require "scenes/GameIntro"
 local Setting = require "scenes/Setting"
 local Pause = require "scenes/Pause"
 
@@ -16,7 +15,8 @@ function love.update(dt)
     mouse_x, mouse_y = love.mouse.getPosition()
 
     if menu.state.running then
-        player:update(dt)
+        -- player:update(dt)
+        game:update(dt)
     end
 
     if menu.state.menu then
@@ -40,8 +40,10 @@ function love.draw()
 
     if menu.state["running"] then
 
-        player:draw()
         game:draw()
+        player:draw()
+
+
 
     elseif menu.state["menu"] then
 
@@ -55,7 +57,11 @@ function love.draw()
 
         setting:draw()
 
-    elseif menu.state["ended"] then
+    elseif menu.state["editor"] then
+
+        editor:draw()
+
+    elseif menu.state["gameover"] then
         love.graphics.printf("Game Over", fonts.massive.font, 0, love.graphics.getHeight() / 2 - fonts.massive.size, love.graphics.getWidth(), "center")
     end
 

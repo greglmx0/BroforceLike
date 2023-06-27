@@ -1,4 +1,6 @@
 require("GUI/Button")
+local Game = require "scenes/GameIntro"
+local Editor = require("scenes/Editor")
 
 width = love.graphics.getWidth()
 height = love.graphics.getHeight()
@@ -11,6 +13,10 @@ function Menu()
             pause = Paused(game)
             menu:changeGameState("running")
         end,
+        editor = function()
+            editor = Editor()
+            menu:changeGameState("editor")
+        end,
         showSetting = function()
             menu:changeGameState("setting")
         end,
@@ -21,14 +27,16 @@ function Menu()
 
     local buttons = {
         Button(funcs.newGame, nil, nil, love.graphics.getWidth() / 3, 50, "New Game", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.25),
-        Button(funcs.showSetting, nil, nil, love.graphics.getWidth() / 3, 50, "Setting", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.40),
-        Button(funcs.quitGame, nil, nil, love.graphics.getWidth() / 3, 50, "Quit", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.55),
+        Button(funcs.editor, nil, nil, love.graphics.getWidth() / 3, 50, "Map editor", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.40),
+        Button(funcs.showSetting, nil, nil, love.graphics.getWidth() / 3, 50, "Setting", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.55),
+        Button(funcs.quitGame, nil, nil, love.graphics.getWidth() / 3, 50, "Quit", "center", "h3", love.graphics.getWidth() / 3, love.graphics.getHeight() * 0.70),
     }
 
     return {
 
         state = {
             menu = true,
+            editor = true,
             paused = false,
             running = false,
             ended = false,
@@ -37,9 +45,10 @@ function Menu()
 
         changeGameState = function(self, state)
             menu.state["menu"] = state == "menu"
+            menu.state["editor"] = state == "editor"
             menu.state["paused"] = state == "paused"
             menu.state["running"] = state == "running"
-            menu.state["ended"] = state == "ended"
+            menu.state["ended"] = state == "gameover"
             menu.state["setting"] = state == "setting" print("changed to " .. state)
         end,
 
