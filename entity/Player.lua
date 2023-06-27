@@ -1,4 +1,5 @@
 map = require "Maps/MapIntro"
+local GameOver = require "scenes/GameOver"
 
 function Player(num_lives, map)
 
@@ -63,6 +64,7 @@ function Player(num_lives, map)
 
             if self.map.map[player_y + 1][player_x + 1] == 100 then
                 if self.lives <= 0 then
+                    gameover = GameOver()
                     menu:changeGameState("gameover")
                     return
                 else

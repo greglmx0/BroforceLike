@@ -39,7 +39,7 @@ function Menu()
             editor = true,
             paused = false,
             running = false,
-            ended = false,
+            gameover = false,
             setting = false,
         },
 
@@ -48,7 +48,7 @@ function Menu()
             menu.state["editor"] = state == "editor"
             menu.state["paused"] = state == "paused"
             menu.state["running"] = state == "running"
-            menu.state["ended"] = state == "gameover"
+            menu.state["gameover"] = state == "gameover"
             menu.state["setting"] = state == "setting" print("changed to " .. state)
         end,
 

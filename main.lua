@@ -34,6 +34,11 @@ function love.update(dt)
         clickedMouse = false
     end
 
+    if menu.state.gameover then
+        gameover:run(clickedMouse)
+        clickedMouse = false
+    end
+
 end
 
 function love.draw()
@@ -42,8 +47,6 @@ function love.draw()
 
         game:draw()
         player:draw()
-
-
 
     elseif menu.state["menu"] then
 
@@ -62,7 +65,8 @@ function love.draw()
         editor:draw()
 
     elseif menu.state["gameover"] then
-        love.graphics.printf("Game Over", fonts.massive.font, 0, love.graphics.getHeight() / 2 - fonts.massive.size, love.graphics.getWidth(), "center")
+        gameover:draw()
+
     end
 
     if not menu.state["running"] then
