@@ -25,8 +25,6 @@ function Paused()
             for name, button in pairs(buttons) do
                 if button:checkHover(mouse_x, mouse_y, 10) then
                     if clicked then
-                        print("clicked " .. name)
-                        print("clicked in pause")
                         button:click()
                     end
 

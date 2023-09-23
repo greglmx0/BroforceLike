@@ -1,7 +1,8 @@
-map = require "Maps/MapIntro"
 local GameOver = require "scenes/GameOver"
+local utils = require "utils/utils"
+local map = require "Maps/map"
 
-function Player(num_lives, map)
+function Player(num_lives)
 
     return {
         lives = num_lives or 3,
@@ -18,7 +19,7 @@ function Player(num_lives, map)
         timeMaxJump = 20,
 
         wapon = {},
-
+        tileKill = {43, 78,77, 100, 68,69},
 
         draw = function(self)
 
@@ -28,166 +29,158 @@ function Player(num_lives, map)
             love.graphics.setColor(0.1, 0.1, 0.1)
             love.graphics.setFont(love.graphics.newFont(10))
             love.graphics.printf(self.x .. "", love.graphics.getWidth() / 2, self.y, self.width, "center")
-
-        end,
-
-        ---- check colision AABB (Axis-Aligned Bounding Box)
-
-        --[[
-                curseur_x >= box.x
-            && curseur_x < box.x + box.w
-            && curseur_y >= box.y
-            && curseur_y < box.y + box.h)
-        ]]
-
-
-        colision = function(player_x, player_y, player_width, player_height, object_map)
-
-            if         object_map.map[math.floor(player_y / 64) + 1]                                [math.floor(player_x / 64) + 2 ] == 1
-                     or object_map.map[math.floor((player_y + player_height) / 64) + 1]              [math.floor(player_x / 64) + 2 ] == 1
-                     or object_map.map[math.floor(player_y / 64) + 1]                                [math.floor((player_x + player_width) / 64) + 2 ] == 1
-                     or object_map.map[math.floor((player_y + player_height) / 64) + 1]              [math.floor((player_x + player_width) / 64) + 2 ] == 1
-            then
-                -- print("colision")
-                return true
-            end
-
-
-            -- print("no colision")
-            return false
-        end,
-
-        checkDead = function(self)
-
-            player_x = math.floor(self.x / 64)
-            player_y = math.floor((self.y + 32 + 1) / 64)
-
-            if self.map.map[player_y + 1][player_x + 1] == 100 then
-                if self.lives <= 0 then
-                    gameover = GameOver()
-                    menu:changeGameState("gameover")
-                    return
-                else
-                    self.lives = self.lives - 1
-                    self.x = 128
-                    self.y = 600
-                end
-            end
         end,
 
         update = function(self, dt)
 
             if menu.state.running then
 
-                -- gravity
-                if self.y + self.height < love.graphics.getHeight() then
-                    for i = 8, 0, -1 do
+                -- self:spikeColision(self)
 
-                        if self.colision(self.x, self.y + i, self.width, self.height, self.map) == false then
-                            self.y = self.y + i
-                            break
-                        else
-                            self.inJump = false
-                            self.timeJump = 0
-                        end
+                self:gravity(self)
+                self:jump(self)
+                self.moveLeft(self)
+                self:moveRight(self)
+
+                self.checkDead(self)
+            end
+        end,
+
+        tileColision = function(player_x, player_y, player_width, player_height, object_map, idObject)
+
+
+            if idObject == nil then
+                idObject = {1}
+            end
+
+            if type(idObject) == "number" then
+              idObject = {idObject}
+            end
+
+            idObject =  tableMerge(player.tileKill, idObject)
+            if findInArray( idObject, map[math.floor(player_y / 64) + 1][math.floor(player_x / 64) + 2])
+                    or findInArray( idObject, map[math.floor((player_y + player_height) / 64) + 1][math.floor(player_x / 64) + 2])
+                    or findInArray( idObject, map[math.floor(player_y / 64) + 1][math.floor((player_x + player_width) / 64) + 2])
+                    or findInArray( idObject, map[math.floor((player_y + player_height) / 64) + 1][math.floor((player_x + player_width) / 64) + 2] )
+            then
+                -- print("colision")
+                return true
+            end
+            -- print("no colision")
+            return false
+        end,
+
+        playerDead = function(self)
+            if self.lives <= 0 then
+                gameover = GameOver()
+                menu:changeGameState("gameover")
+                return
+            else
+                self.lives = self.lives - 1
+                self.x = 128
+                self.y = 600
+            end
+        end,
+
+        checkDead = function(self)
+
+            if self.tileColision(self.x, self.y, self.width, self.height, self.map, 100) then
+                self:playerDead()
+            end
+
+        end,
+
+        spikeColision = function(self)
+            box = {
+                x = 19*64 - self.x - 12,
+                y = 12*64,
+                w = 64,
+                h = 20,
+            }
+
+            if         player.x >= box.x + box.w
+                    or player.x + player.width <= box.x
+                    or player.y >= box.y + box.h
+                    or player.y + player.height <= box.y
+            then
+                print('no colision')
+                return false
+            else
+                print('colision')
+                return true
+            end
+        end,
+
+        gravity = function(self)
+            if self.y + self.height < love.graphics.getHeight() then
+                for i = 8, 0, -1 do
+
+                    if self.tileColision(self.x, self.y + i, self.width, self.height, self.map) == false then
+                        self.y = self.y + i
+                        break
+                    else
+                        self.inJump = false
+                        self.timeJump = 0
                     end
                 end
+            end
+        end,
 
-                -- jump
-                if love.keyboard.isDown("space") or love.keyboard.isDown("up") then
+        jump = function(self)
+            if love.keyboard.isDown("space", "up") then
 
-                    if self.inJump == false then
-                        -- and self.colision(self.x, self.y -1, self.width, self.height, self.map) == false
-                        self.inJump = true
+                if self.inJump == false then
+                    self.inJump = true
 
-                        for i = 12, 0, -1 do
-                            if self.colision(self.x, self.y - i, self.width, self.height, self.map) == false then
-                                self.y = self.y - i
-                                break
-                            end
-                        end
-                    end
+                    -- for i = 12, 0, -1 do
+                    --     if self.tileColision(self.x, self.y - i, self.width, self.height, self.map) == false and self.spikeColision(self) then
+                    --         self.y = self.y - i
+                    --         break
+                    --     end
+                    -- end
                 end
+
 
                 if self.timeJump < self.timeMaxJump and self.inJump == true then
                     self.timeJump = self.timeJump + 1
                     for i = 12, 0, -1 do
-                        if self.colision(self.x, self.y - i, self.width, self.height, self.map) == false then
+                        if         self.tileColision(self.x, self.y - i, self.width, self.height, self.map) == false
+                               -- or self.spikeColision(self) == false
+                        then
                             self.y = self.y - i
                             break
                         end
                     end
                 end
 
-                if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
-
-
-                end
-
-                -- move left
-                if love.keyboard.isDown("q") or love.keyboard.isDown("left") then
-
-                    for i = 8, 0, -1 do
-
-                        if self.colision(self.x - i, self.y, self.width, self.height, self.map) == false then
-                            self.x = self.x - i
-                            break
-                        end
-                    end
-                end
-
-                -- move right
-                if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
-
-                    for i = 8, 0, -1 do
-
-                        if self.colision(self.x + i, self.y, self.width, self.height, self.map) == false then
-                            self.x = self.x + i
-                            break
-                        end
-                    end
-                end
-
-                self.checkDead(self)
-
             end
         end,
+
+        moveLeft = function(self)
+            if love.keyboard.isDown("q", "left") then
+
+                for i = 8, 0, -1 do
+
+                    if self.tileColision(self.x - i, self.y, self.width, self.height, self.map) == false then
+                        self.x = self.x - i
+                        break
+                    end
+                end
+            end
+        end,
+
+        moveRight = function(self)
+            if love.keyboard.isDown("d", "right") then
+
+                for i = 8, 0, -1 do
+                    if self.tileColision(self.x + i, self.y, self.width, self.height, self.map) == false then
+                        self.x = self.x + i
+                        break
+                    end
+                end
+            end
+        end
     }
 end
 
 return Player
-
-
-
-
-
---player = {}
---player.__index = player
---
---function player:new(name, x, y)
---    local p = {}
---    setmetatable(p, player)
---
---    p.name = name
---    p.x = x
---    p.y = y
---
---    print("Player " .. p.name .. " created !")
---    print("x: " .. p.x .. " y: " .. p.y)
---
---    return p
---end
---
---function player:draw()
---    -- love.graphics.setColor(125, 125, 125)
---    -- love.graphics.rectangle("fill", self.x, self.y, 100, 100)
---    -- love.graphics.circle("fill", self.x, self.y, 50)
---end
---
---function player:update(dt)
---    -- self.x = self.x + 1
---end
---
---function player:mousepressed(x, y, button, istouch)
---    print("PAN !")
---end
