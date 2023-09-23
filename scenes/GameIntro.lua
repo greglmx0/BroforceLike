@@ -5,7 +5,9 @@ local Text = require "../components/Text"
 function Game(func, difficulty, lives, level)
 
     func = {
-        func = func or function() print("This button has no function attached") end,
+        func = func or function()
+            print("This button has no function attached")
+        end,
     }
 
     map = Map
@@ -29,6 +31,10 @@ function Game(func, difficulty, lives, level)
         -- update draw Score and Lives
         update = function(dt)
             player:update(dt)
+
+            if love.keyboard.isDown("escape") then
+                menu:changeGameState("paused")
+            end
         end,
     }
 end
