@@ -1,6 +1,10 @@
 local export = {}
-export.list = {"exportLua"} -- , "exportTxt", "exportJson"
+
+export.list = {"exportLua"}
 export.format = {"lua"} -- , "txt", "json"}
+
+export.saveAndExit = {"exportLua"}
+
 export.baseDirectory = love.filesystem.getSourceBaseDirectory()
 export.path = export.baseDirectory.."/BroforceLike/Maps/map"
 
@@ -53,6 +57,10 @@ function export.mousepressed(touch)
       end
     end
   end
+end
+
+function export.saveAndExit()
+  print("saveAndExit")
 end
 
 

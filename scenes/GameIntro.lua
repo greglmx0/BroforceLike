@@ -33,7 +33,7 @@ function Game(func, difficulty, lives, level)
             player:update(dt)
 
             if love.keyboard.isDown("escape") then
-                menu:changeGameState("paused")
+                menu:changeGameState("gamePaused")
             end
         end,
     }

@@ -1,6 +1,7 @@
 require("GUI/Button")
 local Game = require "scenes/GameIntro"
-local Editor = require("scenes/Editor")
+local GamePaused = require "scenes/GamePaused"
+local EditorPaused = require "scenes/EditorPaused"
 
 width = love.graphics.getWidth()
 height = love.graphics.getHeight()
@@ -10,12 +11,12 @@ function Menu()
     local funcs = {
         newGame = function ()
             game = Game()
-            pause = Paused(game)
+            gamePaused = GamePaused()
             menu:changeGameState("running")
         end,
         editor = function()
-            editor = Editor()
             menu:changeGameState("editor")
+            editorPaused = EditorPaused()
         end,
         showSetting = function()
             menu:changeGameState("setting")
@@ -37,7 +38,8 @@ function Menu()
         state = {
             menu = true,
             editor = true,
-            paused = false,
+            gamePaused = false,
+            editorPaused = false,
             running = false,
             gameover = false,
             setting = false,
@@ -46,7 +48,8 @@ function Menu()
         changeGameState = function(self, state)
             menu.state["menu"] = state == "menu"
             menu.state["editor"] = state == "editor"
-            menu.state["paused"] = state == "paused"
+            menu.state["gamePaused"] = state == "gamePaused"
+            menu.state["editorPaused"] = state == "editorPaused"
             menu.state["running"] = state == "running"
             menu.state["gameover"] = state == "gameover"
             menu.state["setting"] = state == "setting" print("changed to " .. state)

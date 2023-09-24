@@ -25,21 +25,16 @@ import = require("MapEditor/src/import")
 input = require("MapEditor/src/input")
 
 function editor.load()
-  
- --  data.load()
-
-  grid.width = 40
-  grid.height = 20
 
   grid.load()
   input.load()
 
-  
   window.grid = {}
   window.grid.width = window.width-hud.leftBar.width-hud.rightBar.width
   window.grid.height = window.height-hud.topBar.height
   
   action.resetPos.f()
+  import.importMap()
   
 end
 
@@ -85,12 +80,11 @@ function editor.draw()
   hud.leftBar.draw()
   hud.rightBar.draw()
   hud.topBar.draw()
-  
+
   hud.drawButtonLeftBar(5, 50, 10, 30, tool.list)
   hud.drawButtonLeftBar(5, 400, 10, 30, action.list)
   hud.drawButtonLeftBar(5, 650, 10, 30, action.importantList)
-  hud.drawButtonTopBar(450, 5, 10, 30, export.list, "Export")
-  hud.drawButtonTopBar(700, 5, 10, 30, import.list, "Import")
+  hud.drawButtonTopBar(450, 5, 10, 30, export.list, "Save")
   hud.drawTile(10, 100, 1, 32)
   input.draw()
 end

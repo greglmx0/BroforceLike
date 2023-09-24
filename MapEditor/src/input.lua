@@ -77,6 +77,9 @@ function input.keypressed(key)
   if toUpdate then
     grid.mapLoad()
   end
+  if key == "escape" then
+    menu:changeGameState("editorPaused")
+  end
 end
  
 function input.draw()

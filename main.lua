@@ -2,11 +2,12 @@ local love = require("love")
 local Player = require "entity/Player"
 local Menu = require "scenes/Menu"
 local Setting = require "scenes/Setting"
-local Pause = require "scenes/Pause"
 local editor = require "MapEditor/src/mainMapEditor"
 grid = require("MapEditor/src/grid")
 
-if arg[#arg] == "--debug" then require("mobdebug").start() end
+if arg[#arg] == "--debug" then
+    require("mobdebug").start()
+end
 
 function love.load()
     mouse_x, mouse_y = 0, 0
@@ -33,8 +34,8 @@ function love.update(dt)
         clickedMouse = false
     end
 
-    if menu.state.paused then
-        pause:run(clickedMouse)
+    if menu.state.gamePaused then
+        gamePaused:run(clickedMouse)
         clickedMouse = false
     end
 
@@ -52,6 +53,10 @@ function love.update(dt)
         editor.update(dt)
     end
 
+    if menu.state.editorPaused then
+        editorPaused:run(clickedMouse)
+        clickedMouse = false
+    end
 end
 
 function love.draw()
@@ -65,9 +70,12 @@ function love.draw()
 
         menu:draw()
 
-    elseif menu.state["paused"] then
+    elseif menu.state["gamePaused"] then
+        gamePaused:draw()
 
-        pause:draw()
+    elseif menu.state["editorPaused"] then
+        print("editorPaused")
+        editorPaused:draw()
 
     elseif menu.state["setting"] then
 
@@ -81,18 +89,13 @@ function love.draw()
         gameover:draw()
 
     end
-
-    if not menu.state["running"] then
-        -- if game is NOT running
-
-    end
 end
 
 function love.keypressed(key)
     if menu.state.running then
 
         if key == "escape" then
-            menu:changeGameState("paused")
+            menu:changeGameState("gamePaused")
         end
     elseif menu.state.paused then
 
@@ -102,10 +105,6 @@ function love.keypressed(key)
     end
 end
 
---function love.mousepressed(x, y, button, istouch)
---    print("x: " .. x .. " y: " .. y)
---end
-
 function love.mousepressed(x, y, button, istouch, presses)
 
     if menu.state.editor then
@@ -113,7 +112,7 @@ function love.mousepressed(x, y, button, istouch, presses)
     end
 
     if button == 1 then
-        if not menu.state.running or not menu.state.paused then
+        if not menu.state.running or not menu.state.gamePaused then
             clickedMouse = true -- set if mouse is clicked
         end
     end

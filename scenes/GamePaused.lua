@@ -1,5 +1,5 @@
 
-function Paused()
+function GamePaused()
     local funcs = {
         returnInGame = function()
             menu:changeGameState("running")
@@ -51,4 +51,4 @@ function Paused()
 
 end
 
-return Paused
+return GamePaused
