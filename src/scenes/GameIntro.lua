@@ -1,6 +1,6 @@
 local love = require("love")
-local Map = require "Maps/drawMap"
-local Text = require "../components/Text"
+local Map = require "src/Maps/drawMap"
+local Text = require "src/components/Text"
 
 function Game(func, difficulty, lives, level)
 

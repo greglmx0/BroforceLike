@@ -1,5 +1,5 @@
 local hud = {}
-hud.button = require("MapEditor/src/button")
+hud.button = require("src/button")
 
 hud.leftBar = {}
 hud.leftBar.width = 40

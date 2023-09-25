@@ -1,6 +1,6 @@
-local GameOver = require "scenes/GameOver"
-local utils = require "utils/utils"
-local map = require "Maps/map"
+local GameOver = require "src/scenes/GameOver"
+local utils = require "src/utils/utils"
+local map = require "src/data/map"
 
 function Player(num_lives)
 
@@ -46,12 +46,9 @@ function Player(num_lives)
             end
         end,
 
-        tileColision = function(player_x, player_y, player_width, player_height, object_map, idObject)
+        tileColision = function(player_x, player_y, player_width, player_height, idObject)
 
-
-            if idObject == nil then
-                idObject = {1}
-            end
+            idObject = idObject or {1}
 
             if type(idObject) == "number" then
               idObject = {idObject}
@@ -84,7 +81,7 @@ function Player(num_lives)
 
         checkDead = function(self)
 
-            if self.tileColision(self.x, self.y, self.width, self.height, self.map, 100) then
+            if self.tileColision(self.x, self.y, self.width, self.height, 100) then
                 self:playerDead()
             end
 
@@ -103,10 +100,8 @@ function Player(num_lives)
                     or player.y >= box.y + box.h
                     or player.y + player.height <= box.y
             then
-                print('no colision')
                 return false
             else
-                print('colision')
                 return true
             end
         end,
@@ -115,7 +110,7 @@ function Player(num_lives)
             if self.y + self.height < love.graphics.getHeight() then
                 for i = 8, 0, -1 do
 
-                    if self.tileColision(self.x, self.y + i, self.width, self.height, self.map) == false then
+                    if self.tileColision(self.x, self.y + i, self.width, self.height) == false then
                         self.y = self.y + i
                         break
                     else
@@ -131,21 +126,13 @@ function Player(num_lives)
 
                 if self.inJump == false then
                     self.inJump = true
-
-                    -- for i = 12, 0, -1 do
-                    --     if self.tileColision(self.x, self.y - i, self.width, self.height, self.map) == false and self.spikeColision(self) then
-                    --         self.y = self.y - i
-                    --         break
-                    --     end
-                    -- end
                 end
 
 
                 if self.timeJump < self.timeMaxJump and self.inJump == true then
                     self.timeJump = self.timeJump + 1
                     for i = 12, 0, -1 do
-                        if         self.tileColision(self.x, self.y - i, self.width, self.height, self.map) == false
-                               -- or self.spikeColision(self) == false
+                        if         self.tileColision(self.x, self.y - i, self.width, self.height) == false
                         then
                             self.y = self.y - i
                             break
@@ -161,7 +148,7 @@ function Player(num_lives)
 
                 for i = 8, 0, -1 do
 
-                    if self.tileColision(self.x - i, self.y, self.width, self.height, self.map) == false then
+                    if self.tileColision(self.x - i, self.y, self.width, self.height) == false then
                         self.x = self.x - i
                         break
                     end
@@ -173,7 +160,7 @@ function Player(num_lives)
             if love.keyboard.isDown("d", "right") then
 
                 for i = 8, 0, -1 do
-                    if self.tileColision(self.x + i, self.y, self.width, self.height, self.map) == false then
+                    if self.tileColision(self.x + i, self.y, self.width, self.height) == false then
                         self.x = self.x + i
                         break
                     end

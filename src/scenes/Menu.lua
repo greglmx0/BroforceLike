@@ -1,7 +1,7 @@
-require("GUI/Button")
-local Game = require "scenes/GameIntro"
-local GamePaused = require "scenes/GamePaused"
-local EditorPaused = require "scenes/EditorPaused"
+require("src/components/Button")
+local Game = require "src/scenes/GameIntro"
+local GamePaused = require "src/scenes/GamePaused"
+local EditorPaused = require "src/scenes/EditorPaused"
 
 width = love.graphics.getWidth()
 height = love.graphics.getHeight()

@@ -14,15 +14,15 @@ window.width = 1640
 window.height = 900
 Font = love.graphics.newFont(16)
 
-camera = require("MapEditor/src/camera")
-action = require("MapEditor/src/action")
-tool = require("MapEditor/src/tool")
-tile = require("MapEditor/src/tile")
-mouse = require("MapEditor/src/mouse")
-hud = require("MapEditor/src/hud")
-export = require("MapEditor/src/export")
-import = require("MapEditor/src/import")
-input = require("MapEditor/src/input")
+camera = require("src/camera")
+action = require("src/action")
+tool = require("src/tool")
+tile = require("src/tile")
+mouse = require("src/mouse")
+hud = require("src/hud")
+export = require("src/export")
+import = require("src/import")
+input = require("src/input")
 
 function editor.load()
 

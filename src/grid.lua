@@ -10,25 +10,35 @@ grid.tileSets = {}
 
 function grid.loadExternalImage()
 
-  local tileList = {}
-  for dir in io.popen('dir ' .. love.filesystem.getSourceBaseDirectory() .. '/BroforceLike/MapEditor/tileset' ):lines() do
-    for i in string.gmatch(dir, "%S+") do
-        table.insert(tileList, i)
-    end
-  end
+  --local tileList = {}
+  --for dir in io.popen('dir ' .. love.filesystem.getSourceBaseDirectory() .. '/BroforceLike/MapEditor/tileset' ):lines() do
+  --  for i in string.gmatch(dir, "%S+") do
+  --      table.insert(tileList, i)
+  --  end
+  --end
+  --
+  --for i, tile in ipairs(tileList) do
+  --  -- print(tile .. ' : start loading')
+  --  path = love.filesystem.getSourceBaseDirectory()..'/BroforceLike/MapEditor/tileset/' .. tile
+  --
+  --  local file = io.open(path, "rb")
+  --  local data = file:read("*all")
+  --  file:close()
+  --
+  --  local fileData = love.filesystem.newFileData(data, tostring(string.gsub(tile, '.png', "")))
+  --  local imgData = love.image.newImageData(fileData)
+  --  grid.tileSet = love.graphics.newImage(imgData)
+  --end
 
-  for i, tile in ipairs(tileList) do
-    -- print(tile .. ' : start loading')
-    path = love.filesystem.getSourceBaseDirectory()..'/BroforceLike/MapEditor/tileset/' .. tile
+  path = love.filesystem.getSourceBaseDirectory()..'/BroforceLike/src/asset/Tilesets/tileset.png'
 
-    local file = io.open(path, "rb")
-    local data = file:read("*all")
-    file:close()
+  local file = io.open(path, "rb")
+  local data = file:read("*all")
+  file:close()
 
-    local fileData = love.filesystem.newFileData(data, tostring(string.gsub(tile, '.png', "")))
-    local imgData = love.image.newImageData(fileData)
-    grid.tileSet = love.graphics.newImage(imgData)
-  end
+  local fileData = love.filesystem.newFileData(data, "tileset.png")
+  local imgData = love.image.newImageData(fileData)
+  grid.tileSet = love.graphics.newImage(imgData)
 end
 
 

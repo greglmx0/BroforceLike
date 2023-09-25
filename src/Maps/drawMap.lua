@@ -1,9 +1,7 @@
 local drawMap = {}
-
-local map = require("Maps/map")
+local map = require("src/data/map")
 
 function drawMap.draw()
-
     for i = 1, #map do
         for j = 1, #map[1] do
             if map[i][j] ~= 0 and map[i][j] ~= nil then
@@ -18,8 +16,5 @@ end
 function drawMap.update(dt)
     self.drawMap.draw()
 end
-
-
-
 
 return drawMap

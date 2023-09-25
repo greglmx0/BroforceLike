@@ -1,13 +1,14 @@
 local love = require("love")
-local Player = require "entity/Player"
-local Menu = require "scenes/Menu"
-local Setting = require "scenes/Setting"
-local editor = require "MapEditor/src/mainMapEditor"
-grid = require("MapEditor/src/grid")
+local Player = require "src/entity/Player"
+local Menu = require "src/scenes/Menu"
+local Setting = require "src/scenes/Setting"
+local editor = require "src/scenes/Editor"
+grid = require("src/grid")
 
-if arg[#arg] == "--debug" then
+if arg[#arg] == "--log" then
     require("mobdebug").start()
 end
+
 
 function love.load()
     mouse_x, mouse_y = 0, 0
@@ -25,7 +26,6 @@ function love.update(dt)
     mouse_x, mouse_y = love.mouse.getPosition()
 
     if menu.state.running then
-        -- player:update(dt)
         game:update(dt)
     end
 
@@ -62,32 +62,20 @@ end
 function love.draw()
 
     if menu.state["running"] then
-
         game:draw()
         player:draw()
-
     elseif menu.state["menu"] then
-
         menu:draw()
-
     elseif menu.state["gamePaused"] then
         gamePaused:draw()
-
     elseif menu.state["editorPaused"] then
-        print("editorPaused")
         editorPaused:draw()
-
     elseif menu.state["setting"] then
-
         setting:draw()
-
     elseif menu.state["editor"] then
-
         editor.draw()
-
     elseif menu.state["gameover"] then
         gameover:draw()
-
     end
 end
 

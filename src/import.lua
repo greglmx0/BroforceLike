@@ -2,7 +2,7 @@ local import = {}
 import.list = { "importLua" } -- {"importLua", "importTxt", "importJson"}
 import.format = "lua"  -- {"lua", "txt", "json"}
 import.baseDirectory = love.filesystem.getSourceBaseDirectory()
-import.path = import.baseDirectory .. "/BroforceLike/Maps/map"
+import.path = import.baseDirectory .. "/BroforceLike/src/data/map"
 
 local function errorImportFileNotFound(file, extension)
     if file ~= nil then
