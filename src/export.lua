@@ -6,15 +6,14 @@ export.format = {"lua"} -- , "txt", "json"}
 export.saveAndExit = {"exportLua"}
 
 export.baseDirectory = love.filesystem.getSourceBaseDirectory()
-export.path = export.baseDirectory.."/BroforceLike/Maps/map"
+export.path = export.baseDirectory.."/BroforceLike/src/data/map"
 
 local function errorExportFileNotFound(file)
   if file ~= nil then return false end
 
   love.window.showMessageBox(
     "An existing directory is required to save a map",
-    "Make sure the 'Map save path' specified in the config file 'editor.txt' is valid",
-    "error"
+    "directory: " .. export.path
   )
 
   return true

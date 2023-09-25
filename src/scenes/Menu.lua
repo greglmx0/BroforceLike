@@ -1,7 +1,8 @@
 require("src/components/Button")
-local Game = require "src/scenes/GameIntro"
 local GamePaused = require "src/scenes/GamePaused"
-local EditorPaused = require "src/scenes/EditorPaused"
+
+editorPaused = require("src/scenes/EditorPaused")
+game = require "src/scenes/GameIntro"
 
 width = love.graphics.getWidth()
 height = love.graphics.getHeight()
@@ -10,13 +11,12 @@ function Menu()
 
     local funcs = {
         newGame = function ()
-            game = Game()
+            game:load(nil, 1, 3, 667)
             gamePaused = GamePaused()
             menu:changeGameState("running")
         end,
         editor = function()
             menu:changeGameState("editor")
-            editorPaused = EditorPaused()
         end,
         showSetting = function()
             menu:changeGameState("setting")
@@ -63,7 +63,6 @@ function Menu()
                     if clicked then
                         button:click()
                     end
-
                     self.focused = name
 
                     button:setTextColor(0.8, 0.2, 0.2)

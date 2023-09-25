@@ -1,3 +1,6 @@
+
+global = require("global")
+
 local import = {}
 import.list = { "importLua" } -- {"importLua", "importTxt", "importJson"}
 import.format = "lua"  -- {"lua", "txt", "json"}
@@ -10,9 +13,8 @@ local function errorImportFileNotFound(file, extension)
     end
 
     love.window.showMessageBox(
-            "An existing file is required to load a map",
-            "Make sure the 'Map save path' specified in the config file 'editor.txt' is valid\nAlso make sure that a file with the extension '" .. extension .. "' exists",
-            "error"
+            "An existing file is required to load a map"
+            , "file: " .. import.path .. extension
     )
 
     return true
@@ -79,11 +81,12 @@ function import.mousepressed(touch)
 end
 
 function import.importMap()
-    print("import Map")
 
     local format = import.format
     local extension = "." .. format
     readFromFileWithExtension(extension, import[format])
+
+    global.mapRefreshed = false
 
 end
 

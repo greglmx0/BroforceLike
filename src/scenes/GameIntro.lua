@@ -1,42 +1,49 @@
 local love = require("love")
-local Map = require "src/Maps/drawMap"
 local Text = require "src/components/Text"
+local Player = require "src/entity/Player"
 
-function Game(func, difficulty, lives, level)
+player = Player(4)
+map = require "src/Maps/drawMap"
+import = require "src/import"
 
-    func = {
-        func = func or function()
-            print("This button has no function attached")
-        end,
-    }
+local game = {}
 
-    map = Map
-    player = Player(4)
+game.score = 0
 
-    return {
-        difficulty = difficulty or 1,
-        score = 0,
-        level = level or 1,
+game.func = nil
+game.difficulty = 1
+game.lives = 3
+game.level  = 1
 
-        draw = function(self)
+function game:load(func, difficulty, lives, level)
 
-            -- map:updateMap()
-            map.draw()
+    game.func = func or function()
+        print("This button has no function attached")
+    end
+    game.difficulty = difficulty or 1
+    game.lives = lives or 3
+    game.level = level or 1
 
-            Text("Score: " .. self.score, 0, 0, "h3"):draw()
-            Text("Lives: " .. player.lives, 0, 50, "h3"):draw()
-            Text("Level: " .. self.level, 0, 100, "h3"):draw()
-        end,
+    import.importMap()
+    map:refreshMap()
 
-        -- update draw Score and Lives
-        update = function(dt)
-            player:update(dt)
-
-            if love.keyboard.isDown("escape") then
-                menu:changeGameState("gamePaused")
-            end
-        end,
-    }
 end
 
-return Game
+
+    function game:draw()
+        map:draw()
+
+        Text("Score: " .. self.score, 0, 0, "h3"):draw()
+        Text("Lives: " .. player.lives, 0, 50, "h3"):draw()
+        Text("Level: " .. self.level, 0, 100, "h3"):draw()
+    end
+
+    function game:update(dt)
+        player:update(dt)
+
+        if love.keyboard.isDown("escape") then
+            menu:changeGameState("gamePaused")
+        end
+    end
+
+return game

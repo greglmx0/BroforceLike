@@ -1,11 +1,15 @@
 local love = require("love")
-local Player = require "src/entity/Player"
 local Menu = require "src/scenes/Menu"
-local Setting = require "src/scenes/Setting"
-local editor = require "src/scenes/Editor"
+editor = require "src/scenes/Editor"
 grid = require("src/grid")
+editorPaused = require("src/scenes/EditorPaused")
+game = require "src/scenes/GameIntro"
+setting = require "src/scenes/Setting"
+drawMap = require("src/Maps/drawMap")
 
-if arg[#arg] == "--log" then
+global = require("global")
+
+if arg[#arg] == "--debug" then
     require("mobdebug").start()
 end
 
@@ -13,12 +17,10 @@ end
 function love.load()
     mouse_x, mouse_y = 0, 0
     menu = Menu()
-    setting = Setting()
 
     if menu.state.editor then
         editor.load()
     end
-
 end
 
 function love.update(dt)
@@ -26,6 +28,10 @@ function love.update(dt)
     mouse_x, mouse_y = love.mouse.getPosition()
 
     if menu.state.running then
+        if not global.mapRefreshed then
+            drawMap:refreshMap()
+            global.mapRefreshed = true
+        end
         game:update(dt)
     end
 
