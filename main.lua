@@ -3,7 +3,7 @@ local Menu = require "src/scenes/Menu"
 editor = require "src/scenes/Editor"
 grid = require("src/grid")
 editorPaused = require("src/scenes/EditorPaused")
-game = require "src/scenes/GameIntro"
+game = require "src/scenes/Game"
 setting = require "src/scenes/Setting"
 drawMap = require("src/Maps/drawMap")
 
@@ -28,10 +28,6 @@ function love.update(dt)
     mouse_x, mouse_y = love.mouse.getPosition()
 
     if menu.state.running then
-        if not global.mapRefreshed then
-            drawMap:refreshMap()
-            global.mapRefreshed = true
-        end
         game:update(dt)
     end
 

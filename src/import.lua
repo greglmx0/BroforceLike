@@ -1,4 +1,3 @@
-
 global = require("global")
 
 local import = {}

@@ -1,7 +1,8 @@
 global = require("global")
+map = require("src/data/map")
 
 local drawMap = {}
-drawMap.map = require("src/data/map")
+drawMap.map = map
 
 
 
@@ -18,12 +19,25 @@ function drawMap:draw()
 end
 
 function drawMap.update(dt)
+    if not global.mapRefreshed then
+        drawMap:refreshMap()
+        global.mapRefreshed = true
+    end
     drawMap:draw()
 end
 
 function drawMap:refreshMap()
+    print(#drawMap.map)
+    local newMap = {}
+    for i = 1, #drawMap.map do
+        table.insert(newMap, drawMap.map[i] )
+        -- table.remove(drawMap.map, i)
+    end
+
+
     print("global.mapRefreshed: " .. tostring(global.mapRefreshed))
-    drawMap.map = require("src/data/map")
+    drawMap.map =  newMap
+    print(#drawMap.map)
 end
 
 return drawMap

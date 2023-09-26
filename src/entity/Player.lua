@@ -2,172 +2,167 @@ local GameOver = require "src/scenes/GameOver"
 local utils = require "src/utils/utils"
 local map = require "src/data/map"
 
-function Player(num_lives)
+player = {}
 
-    return {
-        lives = num_lives or 3,
-        map = map,
+player.x = 128
+player.y = 600
+player.width = 32
+player.height = 32
 
-        x = 128,
-        y = 600,
-        width = 32,
-        height = 32,
+player.speed = 8
+player.inJump = false
+player.timeJump = 0
+player.timeMaxJump = 20
 
-        speed = 8,
-        inJump = false,
-        timeJump = 0,
-        timeMaxJump = 20,
+player.wapon = {}
+player.tileKill = { 43, 78, 77, 100, 68, 69 }
 
-        wapon = {},
-        tileKill = {43, 78,77, 100, 68,69},
+function player:load(lives)
+    player.lives = lives or 3
+end
 
-        draw = function(self)
+function player.draw()
 
-            love.graphics.setColor(255, 255, 255)
-            love.graphics.rectangle("fill", love.graphics.getWidth() / 2, self.y, self.width, self.height)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.rectangle("fill", love.graphics.getWidth() / 2, player.y, player.width, player.height)
 
-            love.graphics.setColor(0.1, 0.1, 0.1)
-            love.graphics.setFont(love.graphics.newFont(10))
-            love.graphics.printf(self.x .. "", love.graphics.getWidth() / 2, self.y, self.width, "center")
-        end,
+    love.graphics.setColor(0.1, 0.1, 0.1)
+    love.graphics.setFont(love.graphics.newFont(10))
+    love.graphics.printf(player.x .. "", love.graphics.getWidth() / 2, player.y, player.width, "center")
+end
 
-        update = function(self, dt)
+function player.update(dt)
 
-            if menu.state.running then
+    if menu.state.running then
 
-                -- self:spikeColision(self)
+        player:gravity()
+        player:jump()
+        player.moveLeft()
+        player:moveRight()
 
-                self:gravity(self)
-                self:jump(self)
-                self.moveLeft(self)
-                self:moveRight(self)
+        player.checkDead()
+    end
+end
 
-                self.checkDead(self)
-            end
-        end,
+function player:tileColision(player_x, player_y, player_width, player_height, idObject)
 
-        tileColision = function(player_x, player_y, player_width, player_height, idObject)
+    idObject = idObject or { 1 }
 
-            idObject = idObject or {1}
+    print(player_x, player_y, player_width, player_height, idObject)
 
-            if type(idObject) == "number" then
-              idObject = {idObject}
-            end
+    if type(idObject) == "number" then
+        idObject = { idObject }
+    end
 
-            idObject =  tableMerge(player.tileKill, idObject)
-            if findInArray( idObject, map[math.floor(player_y / 64) + 1][math.floor(player_x / 64) + 2])
-                    or findInArray( idObject, map[math.floor((player_y + player_height) / 64) + 1][math.floor(player_x / 64) + 2])
-                    or findInArray( idObject, map[math.floor(player_y / 64) + 1][math.floor((player_x + player_width) / 64) + 2])
-                    or findInArray( idObject, map[math.floor((player_y + player_height) / 64) + 1][math.floor((player_x + player_width) / 64) + 2] )
-            then
-                -- print("colision")
-                return true
-            end
-            -- print("no colision")
-            return false
-        end,
+    idObject = tableMerge(player.tileKill, idObject)
+    if findInArray(idObject, map[math.floor(player_y / 64) + 1][math.floor(player_x / 64) + 2])
+            or findInArray(idObject, map[math.floor((player_y + player_height) / 64) + 1][math.floor(player_x / 64) + 2])
+            or findInArray(idObject, map[math.floor(player_y / 64) + 1][math.floor((player_x + player_width) / 64) + 2])
+            or findInArray(idObject, map[math.floor((player_y + player_height) / 64) + 1][math.floor((player_x + player_width) / 64) + 2])
+    then
+        return true
+    end
+    return false
+end
 
-        playerDead = function(self)
-            if self.lives <= 0 then
-                gameover = GameOver()
-                menu:changeGameState("gameover")
-                return
+function player:playerDead()
+    if player.lives <= 0 then
+        gameover = GameOver()
+        menu:changeGameState("gameover")
+        return
+    else
+        player.lives = player.lives - 1
+        player.x = 128
+        player.y = 600
+    end
+end
+
+function player:checkDead()
+
+    if player:tileColision(player.x, player.y, player.width, player.height, 100) then
+        player:playerDead()
+    end
+
+end
+
+function player:spikeColision ()
+    box = {
+        x = 19 * 64 - player.x - 12,
+        y = 12 * 64,
+        w = 64,
+        h = 20,
+    }
+
+    if player.x >= box.x + box.w
+            or player.x + player.width <= box.x
+            or player.y >= box.y + box.h
+            or player.y + player.height <= box.y
+    then
+        return false
+    else
+        return true
+    end
+end
+
+function player:gravity()
+    if player.y + player.height < love.graphics.getHeight() then
+        for i = 8, 0, -1 do
+
+            if player:tileColision(player.x, player.y + i, player.width, player.height) == false then
+                player.y = player.y + i
+                break
             else
-                self.lives = self.lives - 1
-                self.x = 128
-                self.y = 600
+                player.inJump = false
+                player.timeJump = 0
             end
-        end,
+        end
+    end
+end
 
-        checkDead = function(self)
+function player:jump ()
+    if love.keyboard.isDown("space", "up") then
 
-            if self.tileColision(self.x, self.y, self.width, self.height, 100) then
-                self:playerDead()
-            end
+        if player.inJump == false then
+            player.inJump = true
+        end
 
-        end,
-
-        spikeColision = function(self)
-            box = {
-                x = 19*64 - self.x - 12,
-                y = 12*64,
-                w = 64,
-                h = 20,
-            }
-
-            if         player.x >= box.x + box.w
-                    or player.x + player.width <= box.x
-                    or player.y >= box.y + box.h
-                    or player.y + player.height <= box.y
-            then
-                return false
-            else
-                return true
-            end
-        end,
-
-        gravity = function(self)
-            if self.y + self.height < love.graphics.getHeight() then
-                for i = 8, 0, -1 do
-
-                    if self.tileColision(self.x, self.y + i, self.width, self.height) == false then
-                        self.y = self.y + i
-                        break
-                    else
-                        self.inJump = false
-                        self.timeJump = 0
-                    end
-                end
-            end
-        end,
-
-        jump = function(self)
-            if love.keyboard.isDown("space", "up") then
-
-                if self.inJump == false then
-                    self.inJump = true
-                end
-
-
-                if self.timeJump < self.timeMaxJump and self.inJump == true then
-                    self.timeJump = self.timeJump + 1
-                    for i = 12, 0, -1 do
-                        if         self.tileColision(self.x, self.y - i, self.width, self.height) == false
-                        then
-                            self.y = self.y - i
-                            break
-                        end
-                    end
-                end
-
-            end
-        end,
-
-        moveLeft = function(self)
-            if love.keyboard.isDown("q", "left") then
-
-                for i = 8, 0, -1 do
-
-                    if self.tileColision(self.x - i, self.y, self.width, self.height) == false then
-                        self.x = self.x - i
-                        break
-                    end
-                end
-            end
-        end,
-
-        moveRight = function(self)
-            if love.keyboard.isDown("d", "right") then
-
-                for i = 8, 0, -1 do
-                    if self.tileColision(self.x + i, self.y, self.width, self.height) == false then
-                        self.x = self.x + i
-                        break
-                    end
+        if player.timeJump < player.timeMaxJump and player.inJump == true then
+            player.timeJump = player.timeJump + 1
+            for i = 12, 0, -1 do
+                if player:tileColision(player.x, player.y - i, player.width, player.height) == false
+                then
+                    player.y = player.y - i
+                    break
                 end
             end
         end
-    }
+
+    end
 end
 
-return Player
+function player:moveLeft()
+    if love.keyboard.isDown("q", "left") then
+
+        for i = 8, 0, -1 do
+
+            if player:tileColision(player.x - i, player.y, player.width, player.height) == false then
+                player.x = player.x - i
+                break
+            end
+        end
+    end
+end
+
+function player:moveRight()
+    if love.keyboard.isDown("d", "right") then
+
+        for i = 8, 0, -1 do
+            if player:tileColision(player.x + i, player.y, player.width, player.height) == false then
+                player.x = player.x + i
+                break
+            end
+        end
+    end
+end
+
+return player

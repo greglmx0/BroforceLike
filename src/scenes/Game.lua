@@ -1,10 +1,9 @@
 local love = require("love")
 local Text = require "src/components/Text"
-local Player = require "src/entity/Player"
 
-player = Player(4)
 map = require "src/Maps/drawMap"
 import = require "src/import"
+player = require "src/entity/Player"
 
 local game = {}
 
@@ -26,6 +25,7 @@ function game:load(func, difficulty, lives, level)
 
     import.importMap()
     map:refreshMap()
+    player:load(4)
 
 end
 

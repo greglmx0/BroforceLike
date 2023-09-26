@@ -2,7 +2,7 @@ require("src/components/Button")
 local GamePaused = require "src/scenes/GamePaused"
 
 editorPaused = require("src/scenes/EditorPaused")
-game = require "src/scenes/GameIntro"
+game = require "src/scenes/Game"
 
 width = love.graphics.getWidth()
 height = love.graphics.getHeight()
