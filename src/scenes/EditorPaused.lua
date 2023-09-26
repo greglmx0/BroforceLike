@@ -37,6 +37,8 @@ end
 
 function editorPaused:draw(self)
 
+    love.graphics.setBackgroundColor(0/255, 0/255, 0/255)
+
     for _, button in pairs(buttons) do
         button:draw()
     end
